@@ -94,39 +94,53 @@ window.addEventListener('DOMContentLoaded', function () {
 
     setClock('.timer', deadline);
 
-    //Modal
+//Modal
 
-    const openModal = document.querySelectorAll('[data-modal]'),
-        modal = document.querySelector('.modal'),
-        closeModal = document.querySelector('.modal__close');
+const openModal = document.querySelectorAll('[data-modal]'),
+    modal = document.querySelector('.modal'),
+    closeModal = document.querySelector('.modal__close');
+
+function showModal() {
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+    clearInterval(showModalTimer); //Если пользователь открыл модальное окно самостоятельно до активации интервала, то данный код           отменит повторное открытие окна
+};
+
+openModal.forEach((item) => {
+    item.addEventListener('click', showModal);
+});
 
 
-    openModal.forEach((item) => {
-        item.addEventListener('click', () => {
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            document.body.style.overflow = 'hidden'; //Убираем скролл во время открытия модального окна
-        });
-    });
+function hideModal() {
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';  //Возвращаем скролл при закрытии модального окна
+};
 
-    function hideModal() {
-        modal.classList.add('hide');
-        modal.classList.remove('show');
-        document.body.style.overflow = '';  //Возвращаем скролл при закрытии модального окна
+closeModal.addEventListener('click', hideModal);
+
+modal.addEventListener('click', (e) => { //Реализуем закрытие модального окна при нажатии на любую область, кроме диалогового окна
+    if (e.target === modal) {
+        hideModal();
+    }
+});
+
+document.addEventListener('keydown', (e) => { //Реализуем закрытие модального окна при нажатии на ESCAPE
+    if (e.code === 'Escape' && modal.classList.contains('show')) {
+        hideModal();
     };
+});
 
-    closeModal.addEventListener('click', hideModal);
 
-    modal.addEventListener('click', (e) => { //Реализуем закрытие модального окна при нажатии на любую область, кроме диалогового окна
-        if (e.target === modal) {
-            hideModal();
-        }
-    });
 
-    document.addEventListener('keydown', (e) => { //Реализуем закрытие модального окна при нажатии на ESCAPE
-        if (e.code === 'Escape' && modal.classList.contains('show')) {
-            hideModal();
-        };
-
-    });
+//Модификация
+const showModalTimer = setTimeout(showModal, 5000);
+function showModalScroll() {
+    if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+        showModal();
+        window.removeEventListener('scroll', showModalScroll);
+    }
+};
+window.addEventListener('scroll', showModalScroll);
 });
