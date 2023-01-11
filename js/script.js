@@ -115,7 +115,7 @@ window.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = '';  //Возвращаем скролл при закрытии модального окна
     };
 
-    closeModal.addEventListener('click', hideModal());
+    closeModal.addEventListener('click', hideModal);
 
     modal.addEventListener('click', (e) => { //Реализуем закрытие модального окна при нажатии на любую область, кроме диалогового окна
         if (e.target === modal) {
